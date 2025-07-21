@@ -1,15 +1,13 @@
 from flask import Blueprint
 
+from app.controllers.auth_controllers import signup_user, login_user
+
 auth_bp = Blueprint('auth_routes', __name__, url_prefix='/auth')
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/signup', methods=['POST'])
+def signup():
+    return signup_user()
+
+@auth_bp.route('/login', methods=['POST'])
 def login():
-    return "Login Page"
-
-@auth_bp.route('/logout', methods=['GET'])
-def logout():   
-    return "Logout Page"
-
-@auth_bp.route('/register', methods=['GET', 'POST'])
-def register():
-    return "Register Page"
+    return login_user()
