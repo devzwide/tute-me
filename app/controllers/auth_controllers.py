@@ -1,21 +1,32 @@
-from flask import request, jsonify, session
+from flask import request, jsonify, session, redirect
 from app.models.user import User
 from app.extensions import db
 
+def start_user_session(user):
+    session['user_id'] = user.user_id
+    session['username'] = user.username
+    session['role'] = user.role
+    session['email'] = user.email
+
 def signup_user():
     data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    name = data.get('name')
-    surname = data.get('surname')
-    role = data.get('role')
-    password = data.get('password')
+    required_fields = ['username', 'email', 'name', 'surname', 'password']
 
-    if not all([username, email, name, surname, role, password]):
+    if not all(field in data for field in required_fields):
         return jsonify({"error": "All fields are required"}), 400
+
+    username = data['username']
+    email = data['email']
+    name = data['name']
+    surname = data['surname']
+    role = data.get('role', 'student')
+    password = data['password']
     
     if User.query.filter((User.username == username) | (User.email == email)).first():
         return jsonify({'error': 'Username or email already exists'}), 409
+    
+    if len(password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters long"}), 400
     
     user = User(
         username=username,
@@ -25,15 +36,15 @@ def signup_user():
         role=role
     )
     user.set_password(password)
+
     db.session.add(user)
     db.session.commit()
 
-    session['user_id'] = user.user_id
-    session['username'] = user.username
-    session['role'] = user.role
-    session['email'] = user.email
+    session.clear()
 
-    return jsonify({"message": "User created successfully"}), 201
+    start_user_session(user)
+
+    return jsonify({"message": "User created successfully", "user_id": user.user_id}), 201
 
 def login_user():
     data = request.get_json()
@@ -46,25 +57,17 @@ def login_user():
     user = User.query.filter_by(username=username).first()
     
     if user and user.check_password(password):
-        session['user_id'] = user.user_id
-        session['username'] = user.username
-        session['role'] = user.role
-        session['email'] = user.email
+        session.clear()
+        start_user_session(user)
 
-        if user.role == 'admin':
-            return jsonify({"message": "Admin Login successful", "user_role": user.role}), 200
-        elif user.role == 'student':
-            return jsonify({"message": "Student Login successful", "user_role": user.role}), 200
-        elif user.role == 'tutor':
-            return jsonify({"message": "Tutor Login successful", "user_role": user.role}), 200
+        return jsonify({
+            "message": f"{user.role.capitalize()} login successful",
+            "user_role": user.role,
+            "user_id": user.user_id
+        }), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
     
 def logout_user():
-    session.pop('user_id', None)
-    session.pop('username', None)
-    session.pop('role', None)
-    session.pop('email', None)
     session.clear()
-
     return jsonify({"message": "Logout successful"}), 200
