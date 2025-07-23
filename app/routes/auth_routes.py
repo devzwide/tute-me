@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from app.controllers.auth_controllers import logout_user, signup_user, login_user
 
-auth_bp = Blueprint('auth_routes', __name__, url_prefix='/auth')
+auth_bp = Blueprint('auth_routes', __name__, url_prefix='/')
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():

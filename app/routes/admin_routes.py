@@ -4,7 +4,7 @@ from app.controllers.admin_controllers import create_module, search_modules, upd
 from functools import wraps
 from flask import session, jsonify
 
-admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+admin_bp = Blueprint('admin', __name__, url_prefix='/')
 
 # User management routes
 
