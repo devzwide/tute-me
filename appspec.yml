@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ec2-user/tute-me
+
+hooks:
+  BeforeInstall:
+    - location: deployment-scripts/before-install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: deployment-scripts/after-install.sh
+      timeout: 300
+      runas: ec2-user
+  ApplicationStart:
+    - location: deployment-scripts/application-start.sh
+      timeout: 300
+      runas: ec2-user
