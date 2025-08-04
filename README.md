@@ -14,10 +14,6 @@ The **Peer Tutoring Platform** is a web-based application designed to facilitate
   - Tutors can accept/reject bookings.
   - Automated email/SMS reminders for upcoming sessions.
 
-- **Communication System**
-  - Real-time chat between students and tutors.
-  - Notifications for booking confirmations and feedback requests.
-
 - **Tutor Verification & Quality Control**
   - Tutors require academic proof or qualification tests.
   - Student rating and review system.
