@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - echo "Starting install phase..."
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+      - echo "Install phase complete."
+  build:
+    commands:
+      - echo "Starting build phase..."
+      - echo "Build phase complete."
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
