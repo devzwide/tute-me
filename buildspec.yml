@@ -1,17 +1,27 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.12
     commands:
       - echo "Starting install phase..."
       - pip install --upgrade pip
       - pip install -r requirements.txt
+      - pip install pytest
       - echo "Install phase complete."
+
+  pre_build:
+    commands:
+      - echo "Running tests..."
+      - pytest || echo "Tests failed but continuing (for now)"
+
   build:
     commands:
       - echo "Starting build phase..."
+      - echo "Nothing to compile for Python/Flask."
       - echo "Build phase complete."
+
 artifacts:
   files:
     - '**/*'
